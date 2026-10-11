@@ -145,7 +145,7 @@ All options live in `windows\config.cmd`. See
 
 ## Tested with
 
-- Windows 11 24H2 (build 26100), 8-core / 16-thread CPU, WHPX
+- Windows 11 25H2 (build 26200.9457), 8-core / 16-thread CPU, WHPX
 - Arch Linux guest, XFCE on X11
 - TigerVNC viewer 1.16.2
 

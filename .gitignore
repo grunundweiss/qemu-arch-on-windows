@@ -1,0 +1,22 @@
+# Local machine-specific settings (copy windows/config.example.cmd)
+windows/config.cmd
+
+# VM disks, ISOs and firmware: large and personal, never commit them
+*.qcow2
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.img
+*.iso
+*.fd
+
+# Backups made by guest/setup.sh and editors
+*.bak
+*.bak.*
+*~
+
+# OS clutter
+Thumbs.db
+desktop.ini
+.DS_Store

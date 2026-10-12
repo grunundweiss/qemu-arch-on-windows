@@ -72,9 +72,16 @@ docs/
 
 ## Quick start
 
-1. **Configure.** Copy `windows\config.example.cmd` to `windows\config.cmd` and
-   set the paths to QEMU, the firmware, your disk image and TigerVNC. Set RAM
-   and CPU count for your machine.
+1. **Copy the UEFI firmware** out of the QEMU install, next to your disk image:
+   ```bat
+   copy "C:\Program Files\qemu\share\qemu\edk2-x86_64-code.fd" "E:\VirtualBox\bios.fd"
+   ```
+   This pins the firmware version, so a QEMU update cannot change it under an
+   installed guest.
+
+   **Configure.** Copy `windows\config.example.cmd` to `windows\config.cmd` and
+   set the paths to QEMU, the firmware copy, your disk image and TigerVNC. Set
+   RAM and CPU count for your machine.
 
    Coming from VirtualBox? See
    [docs/migrating-from-virtualbox.md](docs/migrating-from-virtualbox.md).
@@ -89,13 +96,26 @@ docs/
 3. **Start.** Double-click `windows\start-arch.bat`. QEMU starts minimized and
    TigerVNC connects automatically.
 
-4. **Set up the guest.** In a terminal inside your desktop session:
+4. **Set up the guest.** Once the VM is running, install the clipboard and
+   mouse agent in Arch, if you haven't already. In a terminal inside your desktop
+   session:
    ```bash
-   git clone https://github.com/<you>/qemu-arch-on-windows.git
+   sudo pacman -S spice-vdagent
+   sudo systemctl enable --now spice-vdagentd
+   ```
+   Log out and back in so your desktop starts the session agent, then check:
+   ```bash
+   pgrep -a spice-vdagent    # expect both spice-vdagentd and spice-vdagent
+   ```
+
+   Or let the setup script do the same thing and check the common pitfalls
+   (missing virtio channel, Wayland session, no autostart):
+   ```bash
+   git clone https://github.com/grunundweiss/qemu-arch-on-windows.git
    cd qemu-arch-on-windows
    bash guest/setup.sh                 # spice-vdagent + checks
    ```
-   Optional flags, which can be combined:
+   Optional flags for the script, which can be combined:
 
    | Flag | What it does |
    |---|---|
@@ -123,7 +143,7 @@ All options live in `windows\config.cmd`. See
 | Variable | Example | Notes |
 |---|---|---|
 | `QEMU` | `C:\Program Files\qemu\qemu-system-x86_64.exe` | |
-| `FIRMWARE` | `...\qemu\share\edk2-x86_64-code.fd` | UEFI firmware, opened read-only |
+| `FIRMWARE` | `E:\VirtualBox\bios.fd` | Copy of `qemu\share\qemu\edk2-x86_64-code.fd`, opened read-only |
 | `DISK` / `DISK_FORMAT` | `C:\VMs\Arch.qcow2` / `qcow2` | |
 | `DISK_IF` | `ide` or `virtio` | `virtio` needs `setup.sh --virtio-disk` first |
 | `VNCVIEWER` / `VIEWER_ARGS` | `C:\Tools\vncviewer64.exe` | |

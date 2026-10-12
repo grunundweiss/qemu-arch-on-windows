@@ -13,10 +13,12 @@ rem --- Paths -----------------------------------------------------------------
 set "QEMU_DIR=C:\Program Files\qemu"
 set "QEMU=%QEMU_DIR%\qemu-system-x86_64.exe"
 
-rem UEFI firmware. QEMU for Windows ships one in its share folder.
+rem UEFI firmware. Copy it out of the QEMU install once, next to your disk,
+rem so a QEMU update cannot swap the firmware under an installed guest:
+rem   copy "C:\Program Files\qemu\share\qemu\edk2-x86_64-code.fd" "C:\VMs\bios.fd"
 rem It is opened read-only, so the guest must boot from the fallback path
 rem \EFI\BOOT\BOOTX64.EFI (see docs\migrating-from-virtualbox.md).
-set "FIRMWARE=%QEMU_DIR%\share\edk2-x86_64-code.fd"
+set "FIRMWARE=C:\VMs\bios.fd"
 
 rem The guest disk image.
 set "DISK=C:\VMs\Arch.qcow2"

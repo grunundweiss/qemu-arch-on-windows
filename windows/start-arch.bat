@@ -101,6 +101,8 @@ if not defined REQ_PATH goto require_unset
 if exist "%REQ_PATH%" exit /b 0
 echo [ERROR] %~1 not found: "%REQ_PATH%"
 echo         Fix the path in "%HERE%config.cmd"
+if /i "%~1"=="FIRMWARE" echo         or copy the firmware from QEMU first:
+if /i "%~1"=="FIRMWARE" echo           copy "%QEMU_DIR%\share\qemu\edk2-x86_64-code.fd" "%REQ_PATH%"
 pause
 exit /b 1
 

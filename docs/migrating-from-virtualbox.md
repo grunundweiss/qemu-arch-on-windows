@@ -18,13 +18,17 @@ The `.vdi` stays untouched, so you can go back to VirtualBox at any time. Point
 ## 2. UEFI firmware
 
 If the VM booted with EFI in VirtualBox, QEMU needs UEFI firmware too. QEMU for
-Windows ships one:
+Windows ships one. Copy it next to your disk image:
 
-```
-C:\Program Files\qemu\share\edk2-x86_64-code.fd
+```bat
+copy "C:\Program Files\qemu\share\qemu\edk2-x86_64-code.fd" "E:\VirtualBox\bios.fd"
 ```
 
-Set `FIRMWARE` to that file (or to a copy of it). The launcher opens it
+and set `FIRMWARE` to the copy (`E:\VirtualBox\bios.fd` here). The copy pins the
+firmware version: a QEMU update can replace the file in `Program Files`, but
+your VM keeps booting the firmware it was installed with. (Older QEMU builds
+keep the file directly in `share\` instead of `share\qemu\`;
+`check-setup.ps1` finds either and prints the right command.) The launcher opens it
 **read-only** and without a separate variables file, so UEFI boot entries are
 not saved between boots. The firmware then boots the fallback path
 `\EFI\BOOT\BOOTX64.EFI` on the EFI partition. Most Arch installs that used
@@ -48,7 +52,7 @@ sudo grub-install --target=x86_64-efi --efi-directory=/boot --removable
 Boot the converted disk with `windows\start-arch.bat`, then inside the guest:
 
 ```bash
-git clone https://github.com/<you>/qemu-arch-on-windows.git
+git clone https://github.com/grunundweiss/qemu-arch-on-windows.git
 cd qemu-arch-on-windows
 bash guest/setup.sh --remove-vbox
 ```

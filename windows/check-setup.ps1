@@ -121,6 +121,20 @@ foreach ($item in @(
         Write-Ok "$($item.Name): $($item.Path)"
     } else {
         Write-Fail "$($item.Name) not found: $($item.Path)"
+        if ($item.Name -eq 'FIRMWARE' -and $qemu) {
+            # Recent QEMU for Windows builds keep it in share\qemu, older ones in share.
+            $qemuDir = Split-Path -Parent $qemu
+            $source = @('share\qemu\edk2-x86_64-code.fd', 'share\edk2-x86_64-code.fd') |
+                ForEach-Object { Join-Path $qemuDir $_ } |
+                Where-Object { Test-Path -LiteralPath $_ } |
+                Select-Object -First 1
+            if ($source) {
+                Write-Info "Copy it from your QEMU install:"
+                Write-Info "  copy `"$source`" `"$($item.Path)`""
+            } else {
+                Write-Info "edk2-x86_64-code.fd was not found under $qemuDir\share"
+            }
+        }
     }
 }
 
